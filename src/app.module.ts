@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { LikeController } from "./like/like.controller";
@@ -14,11 +14,14 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env.development" }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ".env.development",
+    }),
     OAuthModule,
     UserModule,
     MongooseModule.forRoot(process.env.MONGODB_URI, {
-      dbName: process.env.MONGODB_DATABASE_NAME,
+      dbName: `${process.env.MONGODB_DATABASE_NAME}`,
     }),
   ],
   controllers: [
