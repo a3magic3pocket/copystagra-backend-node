@@ -7,9 +7,7 @@ export const NOTI_CHECK_COLLECTION_NAME: string = "notiCheck";
 
 @Schema({
   collection: NOTI_CHECK_COLLECTION_NAME,
-  timestamps: {
-    createdAt: "createdAt",
-  },
+  versionKey: false,
 })
 export class NotiCheck {
   _id: Types.ObjectId;
@@ -17,7 +15,7 @@ export class NotiCheck {
   @Prop({ type: Types.ObjectId, unique: true, required: true })
   ownerId: string;
 
-  @Prop({ required: true })
+  @Prop({ type: Date, required: true })
   checkedTime: string;
 }
 
