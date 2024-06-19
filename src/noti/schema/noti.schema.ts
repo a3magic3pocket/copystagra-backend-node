@@ -10,6 +10,7 @@ export const NOTI_COLLECTION_NAME: string = "noti";
   timestamps: {
     createdAt: "createdAt",
   },
+  versionKey: false,
 })
 export class Noti {
   _id: Types.ObjectId;

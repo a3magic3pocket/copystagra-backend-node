@@ -5,7 +5,7 @@ export type UserDocument = HydratedDocument<User>;
 
 export const USER_COLLECTION_NAME: string = "user";
 
-@Schema({ collection: USER_COLLECTION_NAME })
+@Schema({ collection: USER_COLLECTION_NAME, versionKey: false })
 export class User {
   _id: Types.ObjectId;
 

@@ -10,6 +10,7 @@ export const LIKE_COLLECTION_NAME: string = "like";
   timestamps: {
     createdAt: "createdAt",
   },
+  versionKey: false,
 })
 export class Like {
   _id: Types.ObjectId;

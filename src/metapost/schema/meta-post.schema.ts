@@ -7,6 +7,7 @@ export const META_POST_COLLECTION_NAME: string = "metaPost";
 
 @Schema({
   collection: META_POST_COLLECTION_NAME,
+  versionKey: false,
 })
 export class MetaPost {
   _id: Types.ObjectId;

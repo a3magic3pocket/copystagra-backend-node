@@ -10,6 +10,7 @@ export const POST_COLLECTION_NAME: string = "post";
   timestamps: {
     createdAt: "createdAt",
   },
+  versionKey: false,
 })
 export class Post {
   _id: Types.ObjectId;
