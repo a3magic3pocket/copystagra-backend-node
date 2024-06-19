@@ -3,10 +3,23 @@ import { AppModule } from "./app.module";
 import * as session from "express-session";
 import * as passport from "passport";
 import * as cookieParser from "cookie-parser";
+import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 const MongoStore = require("connect-mongo");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const corsOptions: CorsOptions = {
+    origin: process.env.CORS_ORIGINS && process.env.CORS_ORIGINS.split(","),
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Authorization", "Content-Type"],
+    credentials: true,
+    maxAge: 3600,
+  };
+  app.enableCors(corsOptions);
+
+  app.use(cookieParser());
+
   app.use(
     session({
       secret: "asdfasdfasdfasdf",
@@ -27,8 +40,6 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-
-  app.use(cookieParser());
 
   await app.listen(8080);
 }
