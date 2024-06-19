@@ -4,9 +4,9 @@ import { Session as esSession } from "express-session";
 import { IAuthSession } from "./interface/auth-session.interface";
 import { Response } from "express";
 
-@Controller("/v1/auth")
+@Controller()
 export class LoginController {
-  @Get("success")
+  @Get("/v1/auth/success")
   @UseGuards(LoginGuard)
   async loginSuccess(@Session() session: IAuthSession, @Res() res: Response) {
     console.log("session", session.cookie.expires);
@@ -19,7 +19,7 @@ export class LoginController {
     return res.send("<div>hello</div>");
   }
 
-  @Get("logout")
+  @Get("/v1/auth/logout")
   @UseGuards(LoginGuard)
   async logout(@Session() session: esSession, @Res() res: Response) {
     session.destroy(() => {

@@ -25,10 +25,6 @@ export class UserController {
       message: "없는 유저 입니다",
     };
 
-    if (!session.user) {
-      throw new UnprocessableEntityException(errorRespDto);
-    }
-
     const user = await this.userRepository.findById(session.user.sub);
     if (!user) {
       throw new UnprocessableEntityException(errorRespDto);
@@ -47,7 +43,7 @@ export class UserController {
 
   @Get("/v1/my-user-info/:name")
   @UseGuards(LoginGuard)
-  async retrieve(@Session() session: IAuthSession, @Param() params: any) {
+  async retrieve(@Param() params: Record<string, string>) {
     const errorRespDto: IErrorRespDto = {
       code: "9999",
       locale: "ko",

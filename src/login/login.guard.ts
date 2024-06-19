@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
+import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
 
 @Injectable()
 export class LoginGuard implements CanActivate {
@@ -19,6 +20,12 @@ export class LoginGuard implements CanActivate {
       return true;
     }
 
-    throw new UnauthorizedException("authorization required");
+    const errorRespDto: IErrorRespDto = {
+      code: "9999",
+      locale: "en",
+      message: "authorization required",
+    };
+
+    throw new UnauthorizedException(errorRespDto);
   }
 }

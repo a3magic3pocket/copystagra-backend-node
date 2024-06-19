@@ -4,11 +4,15 @@ import * as session from "express-session";
 import * as passport from "passport";
 import * as cookieParser from "cookie-parser";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
+import { BadRequestException, ValidationPipe } from "@nestjs/common";
+import { ValidationError } from "class-validator";
+import { IErrorRespDto } from "./global/dto/interface/error-resp-dto.interface";
 const MongoStore = require("connect-mongo");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // CORS 설정
   const corsOptions: CorsOptions = {
     origin: process.env.CORS_ORIGINS && process.env.CORS_ORIGINS.split(","),
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -18,8 +22,34 @@ async function bootstrap() {
   };
   app.enableCors(corsOptions);
 
+  // 쿠키 제어
   app.use(cookieParser());
 
+  // 유효성 검증
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: false,
+      },
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        const errorInfos = validationErrors.map((error) => ({
+          field: error.property,
+          error: Object.values(error.constraints),
+        }));
+
+        const errorRespDto: IErrorRespDto = {
+          code: "9999",
+          locale: "en",
+          message: errorInfos,
+        };
+
+        return new BadRequestException(errorRespDto);
+      },
+    })
+  );
+
+  // 세션 설정
   app.use(
     session({
       secret: "asdfasdfasdfasdf",
