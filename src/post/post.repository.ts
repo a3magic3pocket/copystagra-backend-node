@@ -9,6 +9,7 @@ import {
   META_POST_COLLECTION_NAME,
   META_POST_FIELDS,
 } from "src/metapost/schema/meta-post.schema";
+import { convertTimeFieldToJavaTimeFormat } from "src/global/time/time-util";
 
 @Injectable()
 export class PostRepostory {
@@ -24,7 +25,7 @@ export class PostRepostory {
     const OWNER_INFO = "ownerInfo";
     const LIKE_INFO = "likeInfo";
 
-    const postRespDtos: PostRespDto[] = await this.postModel
+    const posts = await this.postModel
       .aggregate([
         {
           $lookup: {
@@ -77,6 +78,7 @@ export class PostRepostory {
         { $limit: limit },
         {
           $project: {
+            [POST_FIELDS._id]: 0,
             [POST_RESP_DTO_FIELDS.postId]: 1,
             [POST_RESP_DTO_FIELDS.ownerName]: 1,
             [POST_RESP_DTO_FIELDS.description]: 1,
@@ -88,6 +90,10 @@ export class PostRepostory {
         },
       ])
       .exec();
+
+    const postRespDtos = convertTimeFieldToJavaTimeFormat(posts, [
+      POST_FIELDS.createdAt,
+    ]) as PostRespDto[];
 
     return postRespDtos;
   }
@@ -225,6 +231,7 @@ export class PostRepostory {
         { $limit: limit },
         {
           $project: {
+            [POST_FIELDS._id]: 0,
             [POST_RESP_DTO_FIELDS.postId]: 1,
             [POST_RESP_DTO_FIELDS.ownerName]: 1,
             [POST_RESP_DTO_FIELDS.description]: 1,
@@ -237,7 +244,11 @@ export class PostRepostory {
       ])
       .exec();
 
-    return posts;
+    const postRespDtos = convertTimeFieldToJavaTimeFormat(posts, [
+      POST_FIELDS.createdAt,
+    ]) as PostRespDto[];
+
+    return postRespDtos;
   }
 
   async existsById(postId: string) {
