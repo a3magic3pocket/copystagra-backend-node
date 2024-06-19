@@ -11,7 +11,11 @@ export class PostService {
     hookPostId: string
   ) {
     const skip = (pageNum - 1) * pageSize;
-    // return await this.postRepostiry.getRelatedAllPosts(skip, pageSize);
+    return await this.postRepostiry.getRelatedAllPosts(
+      skip,
+      pageSize,
+      hookPostId
+    );
   }
 
   async getLatestAllPosts(pageNum: number, pageSize: number) {

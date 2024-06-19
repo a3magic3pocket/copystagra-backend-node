@@ -46,7 +46,7 @@ export class PostController {
     const errorRespDto: IErrorRespDto = {
       code: "9999",
       locale: "ko",
-      message: "없는 유저 입니다",
+      message: "없는 post 입니다",
     };
 
     const exists = await this.postRepository.existsById(hookPostId);
@@ -54,20 +54,18 @@ export class PostController {
       throw new UnprocessableEntityException(errorRespDto);
     }
 
-    // const posts = await this.postService.getRelatedPosts(
-    //   pageNum,
-    //   pageSize,
-    //   hookPostId
-    // );
-    // const postsRespDto: IPostsRespDto = {
-    //   pageNum: pageNum,
-    //   pageSize: posts.length,
-    //   posts: posts,
-    // };
+    const posts = await this.postService.getRelatedAllPosts(
+      pageNum,
+      pageSize,
+      hookPostId
+    );
+    const postsRespDto: IPostsRespDto = {
+      pageNum: pageNum,
+      pageSize: posts.length,
+      posts: posts,
+    };
 
-    // return postsRespDto;
-
-    return 1;
+    return postsRespDto;
   }
 
   @Get("/v1/my-posts/")
