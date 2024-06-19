@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NoticheckController } from './noticheck.controller';
+import { NotiCheckController } from './noti-check.controller';
 
-describe('NoticheckController', () => {
-  let controller: NoticheckController;
+describe('NotiCheckController', () => {
+  let controller: NotiCheckController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [NoticheckController],
+      controllers: [NotiCheckController],
     }).compile();
 
-    controller = module.get<NoticheckController>(NoticheckController);
+    controller = module.get<NotiCheckController>(NotiCheckController);
   });
 
   it('should be defined', () => {

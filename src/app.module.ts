@@ -1,17 +1,14 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { LikeController } from "./like/like.controller";
-import { NotiController } from "./noti/noti.controller";
-import { NoticheckController } from "./noticheck/noticheck.controller";
-import { PostController } from "./post/post.controller";
 import { OAuthModule } from "./oauth/oauth.module";
 import { GoogleStrategy } from "./oauth/oauth-google.strategy";
 import { ConfigModule } from "@nestjs/config";
-import { LoginController } from "./login/login.controller";
 import { UserModule } from "./user/user.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PostModule } from "./post/post.module";
+import { NotiModule } from "./noti/noti.module";
+import { NotiCheckModule } from "./noticheck/noti-check.module";
 
 @Module({
   imports: [
@@ -25,6 +22,8 @@ import { PostModule } from "./post/post.module";
     OAuthModule,
     UserModule,
     PostModule,
+    NotiModule,
+    NotiCheckModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
