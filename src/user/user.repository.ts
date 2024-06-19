@@ -15,23 +15,26 @@ export class UserRepository {
     return createdUser.save();
   }
 
-  async findById(id: string): Promise<User> {
-    const condition = {};
-    condition[USER_FIELDS._id] = id;
+  async findById(userId: string): Promise<User> {
+    const condition = {
+      [USER_FIELDS._id]: userId,
+    };
 
     return this.userModel.findOne(condition);
   }
 
   async findByEmail(email: string): Promise<User> {
-    const condition = {};
-    condition[USER_FIELDS.email] = email;
+    const condition = {
+      [USER_FIELDS.email]: email,
+    };
 
     return this.userModel.findOne(condition);
   }
 
   async findByName(name: string): Promise<User> {
-    const condition = {};
-    condition[USER_FIELDS.name] = name;
+    const condition = {
+      [USER_FIELDS.name]: name,
+    };
 
     return this.userModel.findOne(condition);
   }

@@ -3,6 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import { POST_COLLECTION_NAME, POST_FIELDS, Post } from "./schema/post.schema";
 import { Model, PipelineStage, Types } from "mongoose";
 import { USER_COLLECTION_NAME, USER_FIELDS } from "src/user/schema/user.schema";
+import { LIKE_FIELDS } from "src/like/schema/like.schema";
+import { POST_RESP_DTO_FIELDS, PostRespDto } from "./dto/post-resp.dto";
 
 @Injectable()
 export class PostRepostory {
@@ -16,6 +18,103 @@ export class PostRepostory {
     criterias: PipelineStage[]
   ) {
     const OWNER_INFO = "ownerInfo";
+    const LIKE_INFO = "likeInfo";
+
+    const postRespDtos: PostRespDto[] = await this.postModel
+      .aggregate([
+        {
+          $lookup: {
+            from: USER_COLLECTION_NAME,
+            localField: POST_FIELDS.ownerId,
+            foreignField: USER_FIELDS._id,
+            as: OWNER_INFO,
+          },
+        },
+        {
+          $lookup: {
+            from: USER_COLLECTION_NAME,
+            localField: POST_FIELDS.ownerId,
+            foreignField: LIKE_FIELDS.postId,
+            as: LIKE_INFO,
+          },
+        },
+        {
+          $set: {
+            [POST_RESP_DTO_FIELDS.ownerName]: {
+              $ifNull: [
+                {
+                  $arrayElemAt: [`$${OWNER_INFO}.${USER_FIELDS.name}`, 0],
+                },
+                null,
+              ],
+            },
+          },
+        },
+        {
+          $set: {
+            [POST_RESP_DTO_FIELDS.postId]: `$${POST_FIELDS._id}`,
+          },
+        },
+        {
+          $set: {
+            [POST_RESP_DTO_FIELDS.numLikes]: {
+              $ifNull: [
+                {
+                  $arrayElemAt: [`$${LIKE_INFO}.${LIKE_FIELDS.numLikes}`, 0],
+                },
+                null,
+              ],
+            },
+          },
+        },
+        ...criterias,
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $project: {
+            [POST_RESP_DTO_FIELDS.postId]: 1,
+            [POST_RESP_DTO_FIELDS.ownerName]: 1,
+            [POST_RESP_DTO_FIELDS.description]: 1,
+            [POST_RESP_DTO_FIELDS.thumbImagePath]: 1,
+            [POST_RESP_DTO_FIELDS.numLikes]: 1,
+            [POST_RESP_DTO_FIELDS.contentImagePaths]: 1,
+            [POST_RESP_DTO_FIELDS.createdAt]: 1,
+          },
+        },
+      ])
+      .exec();
+
+    return postRespDtos;
+  }
+
+  async getLatestAllPosts(skip: number, limit: number) {
+    return await this.getLatestPostsLogic(skip, limit, []);
+  }
+
+  async getLatestPostsByUserId(skip: number, limit: number, ownerId: string) {
+    const condition = {
+      [POST_FIELDS.ownerId]: new Types.ObjectId(ownerId),
+    };
+    const crietrias = [{ $match: condition }];
+
+    return await this.getLatestPostsLogic(skip, limit, crietrias);
+  }
+
+  async countPostsByUserId(ownerId: string) {
+    const condition = {
+      [POST_FIELDS.ownerId]: new Types.ObjectId(ownerId),
+    };
+
+    const countPosts = await this.postModel
+      .countDocuments(condition, { isDeleted: false })
+      .exec();
+
+    return countPosts;
+  }
+
+  async getRelatedAllPosts(skip: number, limit: number, hookPostId: string) {
+    const OWNER_INFO = "ownerInfo";
 
     // prettier-ignore
     const posts = await this.postModel.aggregate([
@@ -27,7 +126,6 @@ export class PostRepostory {
           as: OWNER_INFO,
         }
       },
-      ...criterias,
       { $sort: { createdAt: -1}},
       { $skip: skip },
       { $limit: limit},
@@ -36,22 +134,13 @@ export class PostRepostory {
     return posts;
   }
 
-  async getLatestPostsByUserId(skip: number, limit: number, ownerId: string) {
-    const condition = {};
-    condition[POST_FIELDS.ownerId] = new Types.ObjectId(ownerId);
-    const crietrias = [{ $match: condition }];
+  async existsById(postId: string) {
+    const condition = {
+      [POST_FIELDS._id]: new Types.ObjectId(postId),
+    };
 
-    return await this.getLatestPostsLogic(skip, limit, crietrias);
-  }
+    const result = await this.postModel.exists(condition).exec();
 
-  async countPostsByUserId(ownerId: string) {
-    const condition = {};
-    condition[POST_FIELDS.ownerId] = new Types.ObjectId(ownerId);
-
-    const countPosts = await this.postModel
-      .countDocuments(condition, { isDeleted: false })
-      .exec();
-
-    return countPosts;
+    return result !== null;
   }
 }
