@@ -5,7 +5,7 @@ export class NotiRetrDto {
   content: string;
   relatedPostId: string;
   postThumbImagePath: string;
-  createdAt: string;
+  createdAt: number[];
 
   constructor(
     notiId: string,
@@ -14,7 +14,7 @@ export class NotiRetrDto {
     content: string,
     relatedPostId: string,
     postThumbImagePath: string,
-    createdAt: string
+    createdAt: number[]
   ) {
     this.notiId = notiId;
     this.ownerName = ownerName;

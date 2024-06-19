@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { NotiRepository } from "./noti.repository";
 import { NotiCheckRepository } from "src/noticheck/noti-check.repository";
+import { NotiRetrDto } from "./dto/noti-retr.dto";
 
 @Injectable()
 export class NotiService {
@@ -9,7 +10,11 @@ export class NotiService {
     private notiCheckRepository: NotiCheckRepository
   ) {}
 
-  async getLatestNotis(pageNum: number, pageSize: number, ownerId: string) {
+  async getLatestNotis(
+    pageNum: number,
+    pageSize: number,
+    ownerId: string
+  ): Promise<NotiRetrDto[]> {
     const skip = (pageNum - 1) * pageSize;
     return await this.notiRepository.getLatestNotis(skip, pageSize, ownerId);
   }

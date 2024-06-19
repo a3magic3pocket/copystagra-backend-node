@@ -3,6 +3,7 @@ import { CommonListQueryDto } from "src/global/dto/common-list-query.dto";
 import { IAuthSession } from "src/login/interface/auth-session.interface";
 import { LoginGuard } from "src/login/login.guard";
 import { NotiService } from "./noti.service";
+import { INotisRespDto } from "./dto/interface/notis-resp-dto.interface";
 
 @Controller()
 export class NotiController {
@@ -17,13 +18,19 @@ export class NotiController {
     let pageNum = query.pageNum ? query.pageNum : 1;
     let pageSize = 9;
 
-    const notis = this.notiService.getLatestNotis(
+    const notis = await this.notiService.getLatestNotis(
       pageNum,
       pageSize,
       session.user.sub
     );
 
-    return notis;
+    const notisRespDto: INotisRespDto = {
+      pageNum: pageNum,
+      pageSize: notis.length,
+      notifications: notis,
+    };
+
+    return notisRespDto;
   }
 
   @Get("/v1/my-notifications/unchecked")

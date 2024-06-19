@@ -5,7 +5,7 @@ import { NOTI_COLLECTION_NAME, NOTI_FIELDS, Noti } from "./schema/noti.schema";
 import { USER_COLLECTION_NAME, USER_FIELDS } from "src/user/schema/user.schema";
 import { NOTI_RETR_DTO_FIELDS, NotiRetrDto } from "./dto/noti-retr.dto";
 import { POST_COLLECTION_NAME, POST_FIELDS } from "src/post/schema/post.schema";
-import { POST_RESP_DTO_FIELDS } from "src/post/dto/post-resp.dto";
+import { convertTimeFieldToJavaTimeFormat } from "src/global/time/time-util";
 
 @Injectable()
 export class NotiRepository {
@@ -21,7 +21,7 @@ export class NotiRepository {
     const OWNER_INFO = "ownerInfo";
     const POST_INFO = "postInfo";
 
-    const notis: NotiRetrDto[] = await this.notiModel
+    const notis = await this.notiModel
       .aggregate([
         {
           $lookup: {
@@ -92,19 +92,24 @@ export class NotiRepository {
         { $limit: limit },
         {
           $project: {
-            [POST_RESP_DTO_FIELDS.postId]: 1,
-            [POST_RESP_DTO_FIELDS.ownerName]: 1,
-            [POST_RESP_DTO_FIELDS.description]: 1,
-            [POST_RESP_DTO_FIELDS.thumbImagePath]: 1,
-            [POST_RESP_DTO_FIELDS.numLikes]: 1,
-            [POST_RESP_DTO_FIELDS.contentImagePaths]: 1,
-            [POST_RESP_DTO_FIELDS.createdAt]: 1,
+            [NOTI_FIELDS._id]: 0,
+            [NOTI_RETR_DTO_FIELDS.notiId]: 1,
+            [NOTI_RETR_DTO_FIELDS.ownerName]: 1,
+            [NOTI_RETR_DTO_FIELDS.ownerThumbImagePath]: 1,
+            [NOTI_RETR_DTO_FIELDS.content]: 1,
+            [NOTI_RETR_DTO_FIELDS.relatedPostId]: 1,
+            [NOTI_RETR_DTO_FIELDS.postThumbImagePath]: 1,
+            [NOTI_RETR_DTO_FIELDS.createdAt]: 1,
           },
         },
       ])
       .exec();
 
-    return notis;
+    const newNotis = convertTimeFieldToJavaTimeFormat(notis, [
+      NOTI_FIELDS.createdAt,
+    ]) as NotiRetrDto[];
+
+    return newNotis;
   }
 
   async getLatestNotis(
