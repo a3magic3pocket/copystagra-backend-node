@@ -12,7 +12,7 @@ import { PostService } from "./post.service";
 import { IPostCountDto } from "./interface/post-count-dto.interface";
 import { CommonListQueryDto } from "src/global/dto/common-list-query.dto";
 import { IPostsRespDto } from "./interface/posts-resp-dto.interface";
-import { RelatedPostsListQueryDto } from "./interface/related-posts-list-query-dto.interface";
+import { RelatedPostsListQueryDto } from "./dto/related-posts-list-query.dto";
 import { PostRepostory } from "./post.repository";
 import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
 
