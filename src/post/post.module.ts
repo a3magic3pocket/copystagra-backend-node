@@ -13,5 +13,6 @@ import { PostRepostory } from "./post.repository";
   ],
   controllers: [PostController],
   providers: [PostService, PostRepostory],
+  exports: [PostRepostory],
 })
 export class PostModule {}
