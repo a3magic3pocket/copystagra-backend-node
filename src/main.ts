@@ -7,10 +7,27 @@ import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.int
 import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { ValidationError } from "class-validator";
 import { IErrorRespDto } from "./global/dto/interface/error-resp-dto.interface";
+import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 const MongoStore = require("connect-mongo");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // app.connectMicroservice<MicroserviceOptions>({
+  //   transport: Transport.KAFKA,
+  //   options: {
+  //     client: {
+  //       clientId: process.env.KAFKA_CLIENT_ID,
+  //       brokers: [process.env.KAFKA_CLIENT_BOOTSTRAP_SERVER],
+  //     },
+  //     consumer: {
+  //       groupId: process.env.KAFKA_CONSUMER_GROUP_ID,
+  //     },
+  //     run: {
+  //       autoCommit: false,
+  //     },
+  //   },
+  // });
 
   // CORS 설정
   const corsOptions: CorsOptions = {
@@ -61,7 +78,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 60000,
+        maxAge: 600000000000,
         secure: false,
         httpOnly: true,
         sameSite: "lax",
@@ -71,6 +88,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  await app.startAllMicroservices();
   await app.listen(8080);
 }
 bootstrap();

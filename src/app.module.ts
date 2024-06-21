@@ -9,7 +9,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { PostModule } from "./post/post.module";
 import { NotiModule } from "./noti/noti.module";
 import { NotiCheckModule } from "./noticheck/noti-check.module";
-import { LikeModule } from './like/like.module';
+import { LikeModule } from "./like/like.module";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 
 @Module({
   imports: [

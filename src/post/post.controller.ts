@@ -15,13 +15,36 @@ import { IPostsRespDto } from "./interface/posts-resp-dto.interface";
 import { RelatedPostsListQueryDto } from "./dto/related-posts-list-query.dto";
 import { PostRepostory } from "./post.repository";
 import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
+import { KafkaProducerService } from "src/global/kafka/kafka.producer.service";
+import { KafkaConsumerService } from "src/global/kafka/kafka.consumer.service";
 
 @Controller()
 export class PostController {
   constructor(
     private postRepository: PostRepostory,
-    private postService: PostService
-  ) {}
+    private postService: PostService,
+    private kafkaProducerService: KafkaProducerService,
+    private kafkaConsumerService: KafkaConsumerService
+  ) {
+    this.kafkaConsumerService.subscribe("test-topic", this.hello);
+  }
+
+  @Get("/kafka/produce")
+  async kafkaTest() {
+    await this.kafkaProducerService.sendMessage(
+      "test-topic",
+      "key",
+      JSON.stringify({ a: "hello-world" })
+    );
+  }
+
+  hello(message) {
+    console.log("kafka message arrived");
+    console.log("message", message);
+    console.log("message.partition", message.partition);
+    console.log("message.offset", message.offset);
+    return true;
+  }
 
   @Get("/v1/posts")
   async listPosts(@Query() query: CommonListQueryDto) {
