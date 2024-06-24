@@ -7,27 +7,19 @@ import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.int
 import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { ValidationError } from "class-validator";
 import { IErrorRespDto } from "./global/dto/interface/error-resp-dto.interface";
-import { MicroserviceOptions, Transport } from "@nestjs/microservices";
+import * as express from "express";
+import * as fs from "fs";
 const MongoStore = require("connect-mongo");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.KAFKA,
-  //   options: {
-  //     client: {
-  //       clientId: process.env.KAFKA_CLIENT_ID,
-  //       brokers: [process.env.KAFKA_CLIENT_BOOTSTRAP_SERVER],
-  //     },
-  //     consumer: {
-  //       groupId: process.env.KAFKA_CONSUMER_GROUP_ID,
-  //     },
-  //     run: {
-  //       autoCommit: false,
-  //     },
-  //   },
-  // });
+  // 정적 파일 경로 설정
+  const imageDirPath = `${process.env.STATIC_DIR_PATH}/${process.env.IMAGE_DIR_NAME}`;
+  if (!fs.existsSync(imageDirPath)) {
+    fs.mkdirSync(imageDirPath, { recursive: true });
+  }
+  app.use("/public", express.static(process.env.STATIC_DIR_PATH));
 
   // CORS 설정
   const corsOptions: CorsOptions = {
