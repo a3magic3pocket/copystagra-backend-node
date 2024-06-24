@@ -1,22 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { KafkaConfigService } from "./kafka.config";
+import { IKConsumerMessage } from "./interface/k-consumer-message.interface";
 
 @Injectable()
 export class KafkaConsumerService {
   private consumer;
 
-  constructor(private kafkaConfigService: KafkaConfigService) {
+  constructor(
+    private kafkaConfigService: KafkaConfigService,
+    private consumerGroupId: string
+  ) {
     this.consumer = this.kafkaConfigService
       .getClient()
-      .consumer({ groupId: "nestjs-consumer-group" });
+      .consumer({ groupId: this.consumerGroupId });
     this.consumer.connect();
   }
 
-  async subscribe(topic: string, callback: (message: any) => boolean) {
+  async subscribe(topic: string, callback: (message: IKConsumerMessage) => Promise<boolean>) {
     await this.consumer.subscribe({ topic, fromBeginning: true });
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const isOk = callback({
+        const isOk = await callback({
           key: message.key ? message.key.toString() : "",
           value: message.value.toString(),
           headers: message.headers,
