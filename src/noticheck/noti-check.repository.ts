@@ -22,7 +22,7 @@ export class NotiCheckRepository {
     return this.notiCheckModel.findOne(condition);
   }
 
-  async upsert(ownerId: string, checkedTime: any) {
+  async upsert(ownerId: string, checkedTime: string) {
     const query = { [NOTI_CHECK_FIELDS.ownerId]: new Types.ObjectId(ownerId) };
     const update = {
       $set: {

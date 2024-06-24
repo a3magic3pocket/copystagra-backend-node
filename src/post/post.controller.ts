@@ -1,10 +1,14 @@
 import {
+  Body,
   Controller,
   Get,
+  Post,
   Query,
   Session,
   UnprocessableEntityException,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { IAuthSession } from "src/login/interface/auth-session.interface";
 import { LoginGuard } from "src/login/login.guard";
@@ -15,35 +19,64 @@ import { IPostsRespDto } from "./interface/posts-resp-dto.interface";
 import { RelatedPostsListQueryDto } from "./dto/related-posts-list-query.dto";
 import { PostRepostory } from "./post.repository";
 import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
-import { KafkaProducerService } from "src/global/kafka/kafka.producer.service";
-import { KafkaConsumerService } from "src/global/kafka/kafka.consumer.service";
+import { FilesInterceptor } from "@nestjs/platform-express";
+import { PostCreateBodyDto } from "./dto/post-create-body.dto";
+import { IPostCreateDto } from "./interface/post-create-dto.interface";
+import { IPostCreateImageDto } from "./interface/post-create-image-dto.interface";
+import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
 
 @Controller()
 export class PostController {
   constructor(
     private postRepository: PostRepostory,
-    private postService: PostService,
-    private kafkaProducerService: KafkaProducerService,
-    private kafkaConsumerService: KafkaConsumerService
+    private postService: PostService
+  ) {}
+
+  @Post("/v1/post")
+  @UseGuards(LoginGuard)
+  @UseInterceptors(FilesInterceptor("image"))
+  async createPost(
+    @Session() session: IAuthSession,
+    @UploadedFiles() imageFiles: Array<Express.Multer.File>,
+    @Body() body: PostCreateBodyDto
   ) {
-    this.kafkaConsumerService.subscribe("test-topic", this.hello);
-  }
+    const allowedExts = new Set(["image/png", "image/jpg", "image/jpeg"]);
+    if (imageFiles.length === 0) {
+      // 자바 코드 호환을 위한 에러처리
+      throw new UnprocessableEntityException(
+        "이미지 파일을 1개 이상 추가해야 합니다."
+      );
+    }
 
-  @Get("/kafka/produce")
-  async kafkaTest() {
-    await this.kafkaProducerService.sendMessage(
-      "test-topic",
-      "key",
-      JSON.stringify({ a: "hello-world" })
-    );
-  }
+    const imageList: IPostCreateImageDto[] = [];
+    for (const imageFile of imageFiles) {
+      if (!allowedExts.has(imageFile.mimetype)) {
+        // 자바 코드 호환을 위한 에러처리
+        throw new UnprocessableEntityException(
+          `허가되지 않은 파일이 포함되어있습니다. 허용된 파일 확장자: ${Array.from(allowedExts).join(", ")}`
+        );
+      }
+      const postCreateImageDto: IPostCreateImageDto = {
+        imageBytes: imageFile.buffer,
+        originalFilename: crypto.randomUUID(),
+      };
 
-  hello(message) {
-    console.log("kafka message arrived");
-    console.log("message", message);
-    console.log("message.partition", message.partition);
-    console.log("message.offset", message.offset);
-    return true;
+      imageList.push(postCreateImageDto);
+    }
+
+    const postCreateDto: IPostCreateDto = {
+      description: body.description,
+      ownerId: session.user.sub,
+      imageList: imageList,
+    };
+
+    this.postService.createPost(postCreateDto);
+
+    const result: ISimpleSuccessRespDto = {
+      message: "success",
+    };
+
+    return result;
   }
 
   @Get("/v1/posts")

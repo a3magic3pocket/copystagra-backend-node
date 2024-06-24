@@ -17,6 +17,11 @@ export class PostRepostory {
     @InjectModel(POST_COLLECTION_NAME) private postModel: Model<Post>
   ) {}
 
+  async createPost(post: Post) {
+    const createdPost = new this.postModel(post);
+    return await createdPost.save();
+  }
+
   async getLatestPostsLogic(
     skip: number,
     limit: number,

@@ -16,17 +16,25 @@ export class KafkaConsumerService {
     this.consumer.connect();
   }
 
-  async subscribe(topic: string, callback: (message: IKConsumerMessage) => Promise<boolean>) {
+  async subscribe(
+    topic: string,
+    callback: (
+      message: IKConsumerMessage,
+      dependencies: Record<string, any>
+    ) => Promise<boolean>,
+    dependencies: Record<string, any>
+  ) {
     await this.consumer.subscribe({ topic, fromBeginning: true });
     await this.consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        const isOk = await callback({
+        const callbackMessage = {
           key: message.key ? message.key.toString() : "",
           value: message.value.toString(),
           headers: message.headers,
           partition: partition,
           offset: message.offset,
-        });
+        };
+        const isOk = await callback(callbackMessage, dependencies);
 
         if (isOk) {
           this.commitManually({ topic, partition, offset: message.offset });
