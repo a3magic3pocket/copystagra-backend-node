@@ -19,11 +19,12 @@ import { IPostsRespDto } from "./interface/posts-resp-dto.interface";
 import { RelatedPostsListQueryDto } from "./dto/related-posts-list-query.dto";
 import { PostRepostory } from "./post.repository";
 import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
-import { FilesInterceptor } from "@nestjs/platform-express";
+import { FilesInterceptor, NoFilesInterceptor } from "@nestjs/platform-express";
 import { PostCreateBodyDto } from "./dto/post-create-body.dto";
 import { IPostCreateDto } from "./interface/post-create-dto.interface";
 import { IPostCreateImageDto } from "./interface/post-create-image-dto.interface";
 import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
+import { PostClickCountBodyDto } from "./dto/post-click-count-body.dto";
 
 @Controller()
 export class PostController {
@@ -158,5 +159,19 @@ export class PostController {
     };
 
     return postCountDto;
+  }
+
+  @Post("/v1/post/click-count")
+  @UseInterceptors(NoFilesInterceptor())
+  async countPostListNumClicks(
+    @Body() postClickCountBodyDto: PostClickCountBodyDto
+  ) {
+    // !주의 - kafkajs에서 kafka streams를 미지원하여 기능 미구현
+
+    const result: ISimpleSuccessRespDto = {
+      message: "success",
+    };
+
+    return result;
   }
 }
