@@ -14,6 +14,8 @@ import { Post as PostSchema } from "./schema/post.schema";
 import { getSha256Buffer } from "src/global/crypto/hash";
 import { IKPostCreationConsumerDependency } from "./interface/k-post-creation-consumer-dependency-dto.interface";
 import { Types } from "mongoose";
+import { NotiService } from "src/noti/noti.service";
+import { NOTI_CODE } from "src/noti/noti-info";
 
 @Injectable()
 export class PostService {
@@ -21,10 +23,12 @@ export class PostService {
     private postRepository: PostRepostory,
     private kafkaProducerService: KafkaProducerService,
     @Inject(CONSUMER_GROUP_ID.POST_CREATION)
-    private kafkaConsumerService: KafkaConsumerService
+    private kafkaConsumerService: KafkaConsumerService,
+    private notiService: NotiService
   ) {
     const kafkaConsumerDependencies: IKPostCreationConsumerDependency = {
-      postRepository,
+      postRepository: this.postRepository,
+      notiService: this.notiService,
     };
     this.kafkaConsumerService.subscribe(
       KAFKA_TOPIC.POST_CREATION,
@@ -153,7 +157,7 @@ export class PostService {
       }
       sharp.cache(false);
 
-      const source = `${kPostCreationDto.description}|${kPostCreationDto.imageDirName}|${thumbDirPath}|${contentDirPath}|${kPostCreationDto.createdAt}`;
+      const source = Object.values(kPostCreationDto).join("|");
       const docHash = await getSha256Buffer(source);
 
       // DB 저장
@@ -168,12 +172,21 @@ export class PostService {
       );
 
       const postRepository = dependencies.postRepository;
-      await postRepository.createPost(newPost);
+      const newPostResult: PostSchema =
+        await postRepository.createPost(newPost);
 
       // 원본 이미지 디렉토리 삭제
       if (fs.existsSync(rawDirPath)) {
         await deleteDir(rawDirPath);
       }
+
+      // 성공 알람 전송
+      const notiService = dependencies.notiService;
+      await notiService.createNoti(
+        kPostCreationDto.ownerId,
+        NOTI_CODE.POSTC_SUCCESS,
+        newPostResult._id.toString()
+      );
 
       return true;
     } catch (error) {
@@ -183,6 +196,14 @@ export class PostService {
       if (fs.existsSync(rawDirPath)) {
         await deleteDir(rawDirPath);
       }
+
+      // 실패 알람 전송
+      const notiService = dependencies.notiService;
+      notiService.createNoti(
+        kPostCreationDto.ownerId,
+        NOTI_CODE.POSTC_FAILURE,
+        null
+      );
 
       return true;
     }

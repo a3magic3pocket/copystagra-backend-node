@@ -15,7 +15,17 @@ import { CONSUMER_GROUP_ID } from "./kafka-info";
         factory.createKafkaConsumerService(CONSUMER_GROUP_ID.POST_CREATION),
       inject: [KafkaConsumerFactory],
     },
+    {
+      provide: CONSUMER_GROUP_ID.NOTI_CREATION,
+      useFactory: (factory: KafkaConsumerFactory) =>
+        factory.createKafkaConsumerService(CONSUMER_GROUP_ID.NOTI_CREATION),
+      inject: [KafkaConsumerFactory],
+    },
   ],
-  exports: [KafkaProducerService, `${CONSUMER_GROUP_ID.POST_CREATION}`], // Export services for injection
+  exports: [
+    KafkaProducerService,
+    `${CONSUMER_GROUP_ID.POST_CREATION}`,
+    `${CONSUMER_GROUP_ID.NOTI_CREATION}`,
+  ], // Export services for injection
 })
 export class KafkaModule {}

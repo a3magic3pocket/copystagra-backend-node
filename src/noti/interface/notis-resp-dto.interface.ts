@@ -1,4 +1,4 @@
-import { NotiRetrDto } from "../noti-retr.dto";
+import { NotiRetrDto } from "../dto/noti-retr.dto";
 
 export interface INotisRespDto {
   pageNum: number;

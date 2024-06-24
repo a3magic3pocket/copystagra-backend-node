@@ -7,14 +7,10 @@ import { CONSUMER_GROUP_ID } from "./kafka-info";
 export class KafkaConsumerFactory {
   constructor(private kafkaConfigService: KafkaConfigService) {}
   createKafkaConsumerService(consumerGroupId: string): KafkaConsumerService {
-    switch (consumerGroupId) {
-      case CONSUMER_GROUP_ID.POST_CREATION:
-        return new KafkaConsumerService(
-          this.kafkaConfigService,
-          consumerGroupId
-        );
-      default:
-        throw new Error(`${consumerGroupId} is unsupported consumerGroupId`);
+    if (!Object.values(CONSUMER_GROUP_ID).includes(consumerGroupId)) {
+      throw new Error(`${consumerGroupId} is unsupported consumerGroupId`);
     }
+
+    return new KafkaConsumerService(this.kafkaConfigService, consumerGroupId);
   }
 }

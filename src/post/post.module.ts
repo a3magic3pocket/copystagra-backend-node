@@ -5,6 +5,7 @@ import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
 import { PostRepostory } from "./post.repository";
 import { KafkaModule } from "src/global/kafka/kafka.module";
+import { NotiModule } from "src/noti/noti.module";
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { KafkaModule } from "src/global/kafka/kafka.module";
       { name: POST_COLLECTION_NAME, schema: PostSchema },
     ]),
     KafkaModule,
+    NotiModule,
   ],
   controllers: [PostController],
   providers: [PostService, PostRepostory],

@@ -27,7 +27,20 @@ export class Noti {
   @Prop({ type: Types.Buffer, required: true })
   docHash: string;
 
+  @Prop({ type: Date, required: true })
   createdAt: string;
+
+  constructor(ownerId, content, relatedPostId, docHash, createdAt, _id = null) {
+    if (_id) {
+      this._id = _id;
+    }
+
+    this.ownerId = ownerId;
+    this.content = content;
+    this.relatedPostId = relatedPostId;
+    this.docHash = docHash;
+    this.createdAt = createdAt;
+  }
 }
 
 export const NotiSchema = SchemaFactory.createForClass(Noti);

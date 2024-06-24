@@ -13,6 +13,11 @@ export class NotiRepository {
     @InjectModel(NOTI_COLLECTION_NAME) private notiModel: Model<Noti>
   ) {}
 
+  async createNoti(noti: Noti) {
+    const createdNoti = new this.notiModel(noti);
+    return await createdNoti.save();
+  }
+
   async getLatestNotisLogic(
     skip: number,
     limit: number,
