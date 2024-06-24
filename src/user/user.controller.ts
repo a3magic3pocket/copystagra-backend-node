@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  HttpStatus,
   Param,
   Session,
   UnprocessableEntityException,
@@ -11,12 +12,19 @@ import { LoginGuard } from "src/login/login.guard";
 import { UserRepository } from "./user.repository";
 import { IUserRespDto } from "./interface/user-resp-dto.interface";
 import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("user")
 @Controller()
 export class UserController {
   constructor(private userRepository: UserRepository) {}
 
   @Get("/v1/my-user-info")
+  @ApiOperation({ summary: "내 정보 조회" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   @UseGuards(LoginGuard)
   async retrieveMyUser(@Session() session: IAuthSession) {
     const errorRespDto: IErrorRespDto = {
@@ -42,6 +50,12 @@ export class UserController {
   }
 
   @Get("/v1/my-user-info/:name")
+  @ApiOperation({ summary: "유저 정보 조회" })
+  @ApiParam({ name: "name", type: "string", description: "유저 명" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   @UseGuards(LoginGuard)
   async retrieve(@Param() params: Record<string, string>) {
     const errorRespDto: IErrorRespDto = {

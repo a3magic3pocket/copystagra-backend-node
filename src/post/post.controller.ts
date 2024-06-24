@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Query,
   Session,
@@ -25,7 +26,17 @@ import { IPostCreateDto } from "./interface/post-create-dto.interface";
 import { IPostCreateImageDto } from "./interface/post-create-image-dto.interface";
 import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
 import { PostClickCountBodyDto } from "./dto/post-click-count-body.dto";
+import { PostCreateBodyForSwaggerDto } from "./dto/post-create-body-for-swagger.dto";
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
+@ApiTags("post")
 @Controller()
 export class PostController {
   constructor(
@@ -34,6 +45,16 @@ export class PostController {
   ) {}
 
   @Post("/v1/post")
+  @ApiOperation({ summary: "포스트 생성" })
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    description: "파일 정보 업로드",
+    type: PostCreateBodyForSwaggerDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "생성 성공",
+  })
   @UseGuards(LoginGuard)
   @UseInterceptors(FilesInterceptor("image"))
   async createPost(
@@ -81,6 +102,11 @@ export class PostController {
   }
 
   @Get("/v1/posts")
+  @ApiOperation({ summary: "모든 포스트 조회" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   async listPosts(@Query() query: CommonListQueryDto) {
     let pageNum = query.pageNum ? query.pageNum : 1;
     let pageSize = 9;
@@ -96,6 +122,16 @@ export class PostController {
   }
 
   @Get("/v1/related-posts")
+  @ApiOperation({ summary: "관련 포스트 조회" })
+  @ApiQuery({
+    name: "hook-post-id",
+    type: "string",
+    description: "관련 포스트 id",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   async listRelatedPosts(@Query() query: RelatedPostsListQueryDto) {
     let pageNum = query.pageNum ? query.pageNum : 1;
     let pageSize = 9;
@@ -126,6 +162,11 @@ export class PostController {
   }
 
   @Get("/v1/my-posts/")
+  @ApiOperation({ summary: "내 포스트 조회" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   @UseGuards(LoginGuard)
   async listMyPosts(
     @Session() session: IAuthSession,
@@ -149,6 +190,11 @@ export class PostController {
   }
 
   @Get("/v1/my-posts/count")
+  @ApiOperation({ summary: "내 포스트 수 조회" })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "조회 성공",
+  })
   @UseGuards(LoginGuard)
   async countMyPosts(@Session() session: IAuthSession) {
     const countMyPosts = await this.postService.countPostsByUserId(
@@ -162,6 +208,15 @@ export class PostController {
   }
 
   @Post("/v1/post/click-count")
+  @ApiOperation({
+    summary: "포스트 클릭 수 갱신",
+    description: "!주의 - kafkajs에서 kafka streams를 미지원하여 기능 미구현",
+  })
+  @ApiBody({ description: "postId", type: PostClickCountBodyDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "갱신 성공",
+  })
   @UseInterceptors(NoFilesInterceptor())
   async countPostListNumClicks(
     @Body() postClickCountBodyDto: PostClickCountBodyDto

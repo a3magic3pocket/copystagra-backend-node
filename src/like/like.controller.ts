@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpStatus,
   Post,
   Session,
   UnprocessableEntityException,
@@ -19,7 +20,9 @@ import { IAuthSession } from "src/login/interface/auth-session.interface";
 import { ILikeUpsertDto } from "./interface/like-upsert-dto.interface";
 import { LikeService } from "./like.service";
 import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("like")
 @Controller()
 export class LikeController {
   constructor(
@@ -60,6 +63,12 @@ export class LikeController {
   }
 
   @Post("/v1/like/up")
+  @ApiOperation({ summary: "좋아요" })
+  @ApiBody({ description: "body", type: LikeFormDataDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "갱신 성공",
+  })
   @UseGuards(LoginGuard)
   @UseInterceptors(NoFilesInterceptor())
   async up(
@@ -97,6 +106,12 @@ export class LikeController {
   }
 
   @Post("/v1/like/down")
+  @ApiOperation({ summary: "좋아요 취소" })
+  @ApiBody({ description: "body", type: LikeFormDataDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "갱신 성공",
+  })
   @UseGuards(LoginGuard)
   @UseInterceptors(NoFilesInterceptor())
   async down(
