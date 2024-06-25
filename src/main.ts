@@ -75,7 +75,7 @@ async function bootstrap() {
         maxAge: process.env.AUTH_COOKIE_MAX_AGE
           ? parseInt(process.env.AUTH_COOKIE_MAX_AGE, 10)
           : 6000,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         httpOnly: true,
         sameSite: "lax",
       },
