@@ -17,6 +17,14 @@ export class NotiCheck {
 
   @Prop({ type: Date, required: true })
   checkedTime: string;
+
+  constructor(ownerId, checkedTime, _id = null) {
+    if (_id) {
+      this._id = _id;
+    }
+    this.ownerId = ownerId;
+    this.checkedTime = checkedTime;
+  }
 }
 
 export const NotiCheckSchema = SchemaFactory.createForClass(NotiCheck);
