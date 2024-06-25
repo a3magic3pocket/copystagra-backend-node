@@ -15,7 +15,10 @@ import { LikeModule } from "./like/like.module";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ".env.development",
+      envFilePath:
+        process.env.NODE_ENV === "production"
+          ? ".env.production"
+          : ".env.development",
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI, {
       dbName: `${process.env.MONGODB_DATABASE_NAME}`,

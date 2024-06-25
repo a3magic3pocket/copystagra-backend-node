@@ -63,7 +63,7 @@ async function bootstrap() {
   // 세션 설정
   app.use(
     session({
-      secret: "asdfasdfasdfasdf",
+      secret: process.env.AUTH_COOKIE_SECRET,
       store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI,
         dbName: process.env.MONGDB_DATABASE_NAME,
@@ -72,7 +72,9 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 600000000000,
+        maxAge: process.env.AUTH_COOKIE_MAX_AGE
+          ? parseInt(process.env.AUTH_COOKIE_MAX_AGE, 10)
+          : 6000,
         secure: false,
         httpOnly: true,
         sameSite: "lax",
