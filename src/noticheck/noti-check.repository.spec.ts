@@ -21,7 +21,7 @@ import {
   NotiCheckSchema,
 } from "./schema/noti-check.schema";
 
-describe("UserRepository", () => {
+describe("NotiCheckRepository", () => {
   let userRepository: UserRepository;
   let notiCheckRepository: NotiCheckRepository;
   let newUser: User;

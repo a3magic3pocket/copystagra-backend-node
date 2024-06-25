@@ -18,7 +18,7 @@ export class NotiRepository {
     return await createdNoti.save();
   }
 
-  async getLatestNotisLogic(
+  private async getLatestNotisLogic(
     skip: number,
     limit: number,
     criterias: PipelineStage[]
