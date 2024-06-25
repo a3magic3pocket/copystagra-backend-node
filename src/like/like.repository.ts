@@ -9,6 +9,14 @@ export class LikeRepostory {
     @InjectModel(LIKE_COLLECTION_NAME) private likeModel: Model<Like>
   ) {}
 
+  async findById(likeId: string): Promise<Like> {
+    const condition = {
+      [LIKE_FIELDS._id]: likeId,
+    };
+
+    return this.likeModel.findOne(condition);
+  }
+
   async upsert(like: Like) {
     const query = {
       [LIKE_FIELDS.ownerId]: new Types.ObjectId(like.ownerId),
