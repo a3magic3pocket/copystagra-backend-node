@@ -132,4 +132,5 @@ dist
 # Custom
 .gitignore
 .env.development
+.env.production
 .vscode
