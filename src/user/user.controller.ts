@@ -7,11 +7,11 @@ import {
   UnprocessableEntityException,
   UseGuards,
 } from "@nestjs/common";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
-import { LoginGuard } from "src/login/login.guard";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
+import { LoginGuard } from "@src/login/login.guard";
 import { UserRepository } from "./user.repository";
 import { IUserRespDto } from "./interface/user-resp-dto.interface";
-import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
+import { IErrorRespDto } from "@src/global/dto/interface/error-resp-dto.interface";
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("user")

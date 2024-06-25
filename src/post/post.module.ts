@@ -3,9 +3,9 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { POST_COLLECTION_NAME, PostSchema } from "./schema/post.schema";
 import { PostController } from "./post.controller";
 import { PostService } from "./post.service";
-import { PostRepostory } from "./post.repository";
-import { KafkaModule } from "src/global/kafka/kafka.module";
-import { NotiModule } from "src/noti/noti.module";
+import { PostRepository } from "./post.repository";
+import { KafkaModule } from "@src/global/kafka/kafka.module";
+import { NotiModule } from "@src/noti/noti.module";
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { NotiModule } from "src/noti/noti.module";
     NotiModule,
   ],
   controllers: [PostController],
-  providers: [PostService, PostRepostory],
-  exports: [PostRepostory],
+  providers: [PostService, PostRepository],
+  exports: [PostRepository],
 })
 export class PostModule {}

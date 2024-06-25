@@ -1,8 +1,8 @@
 import { Controller, HttpStatus, Post, Session } from "@nestjs/common";
 import { NotiCheckRepository } from "./noti-check.repository";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
-import { getKorTime } from "src/global/time/time-util";
-import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
+import { getKorTime } from "@src/global/time/time-util";
+import { ISimpleSuccessRespDto } from "@src/global/dto/interface/simple-success-resp-dto.interface";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("notiCheck")

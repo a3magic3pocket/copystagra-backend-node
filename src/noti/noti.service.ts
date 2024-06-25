@@ -1,17 +1,17 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { NotiRepository } from "./noti.repository";
-import { NotiCheckRepository } from "src/noticheck/noti-check.repository";
+import { NotiCheckRepository } from "@src/noticheck/noti-check.repository";
 import { NotiRetrDto } from "./dto/noti-retr.dto";
 import { NotiMapRepository } from "./noti-map.repository";
-import { CONSUMER_GROUP_ID, KAFKA_TOPIC } from "src/global/kafka/kafka-info";
-import { KafkaConsumerService } from "src/global/kafka/kafka.consumer.service";
+import { CONSUMER_GROUP_ID, KAFKA_TOPIC } from "@src/global/kafka/kafka-info";
+import { KafkaConsumerService } from "@src/global/kafka/kafka.consumer.service";
 import { IKNotiCreationDto } from "./interface/k-noti-creation-dto.interface";
-import { getKorTime } from "src/global/time/time-util";
+import { getKorTime } from "@src/global/time/time-util";
 import { IKNotiCreationConsumerDependency } from "./interface/k-noti-creation-consumer-dependency-dto-interface";
-import { IKConsumerMessage } from "src/global/kafka/interface/k-consumer-message.interface";
-import { KafkaProducerService } from "src/global/kafka/kafka.producer.service";
+import { IKConsumerMessage } from "@src/global/kafka/interface/k-consumer-message.interface";
+import { KafkaProducerService } from "@src/global/kafka/kafka.producer.service";
 import { Noti } from "./schema/noti.schema";
-import { getSha256Buffer } from "src/global/crypto/hash";
+import { getSha256Buffer } from "@src/global/crypto/hash";
 import { Types } from "mongoose";
 
 @Injectable()

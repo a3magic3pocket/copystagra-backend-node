@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Observable } from "rxjs";
-import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
+import { IErrorRespDto } from "@src/global/dto/interface/error-resp-dto.interface";
 
 @Injectable()
 export class LoginGuard implements CanActivate {

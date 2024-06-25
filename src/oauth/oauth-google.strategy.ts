@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-google-oauth20";
-import { UserRepository } from "src/user/user.repository";
-import { IUserCreateDto } from "src/user/interface/user-create-dto.interface";
-import { USER_ROLE } from "src/user/user-role";
-import { IOAuthUser } from "src/oauth/interface/oauth-user.interface";
+import { UserRepository } from "@src/user/user.repository";
+import { IUserCreateDto } from "@src/user/interface/user-create-dto.interface";
+import { USER_ROLE } from "@src/user/user-role";
+import { IOAuthUser } from "@src/oauth/interface/oauth-user.interface";
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {

@@ -13,20 +13,20 @@ import {
   LikeFormDataDto,
 } from "./dto/like-form-data.dto";
 import { NoFilesInterceptor } from "@nestjs/platform-express";
-import { PostRepostory } from "src/post/post.repository";
-import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
-import { LoginGuard } from "src/login/login.guard";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
+import { PostRepository } from "@src/post/post.repository";
+import { IErrorRespDto } from "@src/global/dto/interface/error-resp-dto.interface";
+import { LoginGuard } from "@src/login/login.guard";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
 import { ILikeUpsertDto } from "./interface/like-upsert-dto.interface";
 import { LikeService } from "./like.service";
-import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
+import { ISimpleSuccessRespDto } from "@src/global/dto/interface/simple-success-resp-dto.interface";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("like")
 @Controller()
 export class LikeController {
   constructor(
-    private postRepository: PostRepostory,
+    private postRepository: PostRepository,
     private likeService: LikeService
   ) {}
   async isPostIdValid(postId: string) {

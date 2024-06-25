@@ -6,9 +6,9 @@ import {
   Session,
   UseGuards,
 } from "@nestjs/common";
-import { CommonListQueryDto } from "src/global/dto/common-list-query.dto";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
-import { LoginGuard } from "src/login/login.guard";
+import { CommonListQueryDto } from "@src/global/dto/common-list-query.dto";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
+import { LoginGuard } from "@src/login/login.guard";
 import { NotiService } from "./noti.service";
 import { INotisRespDto } from "./interface/notis-resp-dto.interface";
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";

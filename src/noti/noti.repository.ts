@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, PipelineStage, Types } from "mongoose";
 import { NOTI_COLLECTION_NAME, NOTI_FIELDS, Noti } from "./schema/noti.schema";
-import { USER_COLLECTION_NAME, USER_FIELDS } from "src/user/schema/user.schema";
+import { USER_COLLECTION_NAME, USER_FIELDS } from "@src/user/schema/user.schema";
 import { NOTI_RETR_DTO_FIELDS, NotiRetrDto } from "./dto/noti-retr.dto";
-import { POST_COLLECTION_NAME, POST_FIELDS } from "src/post/schema/post.schema";
-import { convertTimeFieldToJavaTimeFormat } from "src/global/time/time-util";
+import { POST_COLLECTION_NAME, POST_FIELDS } from "@src/post/schema/post.schema";
+import { convertTimeFieldToJavaTimeFormat } from "@src/global/time/time-util";
 
 @Injectable()
 export class NotiRepository {

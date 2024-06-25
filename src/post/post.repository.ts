@@ -2,17 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { POST_COLLECTION_NAME, POST_FIELDS, Post } from "./schema/post.schema";
 import { Model, PipelineStage, Types } from "mongoose";
-import { USER_COLLECTION_NAME, USER_FIELDS } from "src/user/schema/user.schema";
-import { LIKE_COLLECTION_NAME, LIKE_FIELDS } from "src/like/schema/like.schema";
+import { USER_COLLECTION_NAME, USER_FIELDS } from "@src/user/schema/user.schema";
+import { LIKE_COLLECTION_NAME, LIKE_FIELDS } from "@src/like/schema/like.schema";
 import { POST_RESP_DTO_FIELDS, PostRespDto } from "./dto/post-resp.dto";
 import {
   META_POST_COLLECTION_NAME,
   META_POST_FIELDS,
-} from "src/metapost/schema/meta-post.schema";
-import { convertTimeFieldToJavaTimeFormat } from "src/global/time/time-util";
+} from "@src/metapost/schema/meta-post.schema";
+import { convertTimeFieldToJavaTimeFormat } from "@src/global/time/time-util";
 
 @Injectable()
-export class PostRepostory {
+export class PostRepository {
   constructor(
     @InjectModel(POST_COLLECTION_NAME) private postModel: Model<Post>
   ) {}
@@ -22,7 +22,7 @@ export class PostRepostory {
     return await createdPost.save();
   }
 
-  async getLatestPostsLogic(
+  private async getLatestPostsLogic(
     skip: number,
     limit: number,
     criterias: PipelineStage[]

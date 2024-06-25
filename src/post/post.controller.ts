@@ -11,20 +11,20 @@ import {
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
-import { LoginGuard } from "src/login/login.guard";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
+import { LoginGuard } from "@src/login/login.guard";
 import { PostService } from "./post.service";
 import { IPostCountDto } from "./interface/post-count-dto.interface";
-import { CommonListQueryDto } from "src/global/dto/common-list-query.dto";
+import { CommonListQueryDto } from "@src/global/dto/common-list-query.dto";
 import { IPostsRespDto } from "./interface/posts-resp-dto.interface";
 import { RelatedPostsListQueryDto } from "./dto/related-posts-list-query.dto";
-import { PostRepostory } from "./post.repository";
-import { IErrorRespDto } from "src/global/dto/interface/error-resp-dto.interface";
+import { PostRepository } from "./post.repository";
+import { IErrorRespDto } from "@src/global/dto/interface/error-resp-dto.interface";
 import { FilesInterceptor, NoFilesInterceptor } from "@nestjs/platform-express";
 import { PostCreateBodyDto } from "./dto/post-create-body.dto";
 import { IPostCreateDto } from "./interface/post-create-dto.interface";
 import { IPostCreateImageDto } from "./interface/post-create-image-dto.interface";
-import { ISimpleSuccessRespDto } from "src/global/dto/interface/simple-success-resp-dto.interface";
+import { ISimpleSuccessRespDto } from "@src/global/dto/interface/simple-success-resp-dto.interface";
 import { PostClickCountBodyDto } from "./dto/post-click-count-body.dto";
 import { PostCreateBodyForSwaggerDto } from "./dto/post-create-body-for-swagger.dto";
 import {
@@ -40,7 +40,7 @@ import {
 @Controller()
 export class PostController {
   constructor(
-    private postRepository: PostRepostory,
+    private postRepository: PostRepository,
     private postService: PostService
   ) {}
 

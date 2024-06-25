@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { GoogleOAuthGuard } from "./oauth-google.guard";
-import { IAuthUserRequest } from "src/login/interface/auth-user-request-interface";
-import { IAuthSession } from "src/login/interface/auth-session.interface";
+import { IAuthUserRequest } from "@src/login/interface/auth-user-request-interface";
+import { IAuthSession } from "@src/login/interface/auth-session.interface";
 import { Response } from "express";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 

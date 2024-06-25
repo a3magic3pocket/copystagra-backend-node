@@ -1,26 +1,26 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { PostRepostory } from "./post.repository";
+import { PostRepository } from "./post.repository";
 import { IPostCreateDto } from "./interface/post-create-dto.interface";
 import { IKPostCreationDto } from "./interface/k-post-creation-dto.interface";
-import { createDir, deleteDir, writeFile } from "src/global/file/file-util";
-import { getKorTime } from "src/global/time/time-util";
-import { CONSUMER_GROUP_ID, KAFKA_TOPIC } from "src/global/kafka/kafka-info";
-import { KafkaConsumerService } from "src/global/kafka/kafka.consumer.service";
-import { KafkaProducerService } from "src/global/kafka/kafka.producer.service";
-import { IKConsumerMessage } from "src/global/kafka/interface/k-consumer-message.interface";
+import { createDir, deleteDir, writeFile } from "@src/global/file/file-util";
+import { getKorTime } from "@src/global/time/time-util";
+import { CONSUMER_GROUP_ID, KAFKA_TOPIC } from "@src/global/kafka/kafka-info";
+import { KafkaConsumerService } from "@src/global/kafka/kafka.consumer.service";
+import { KafkaProducerService } from "@src/global/kafka/kafka.producer.service";
+import { IKConsumerMessage } from "@src/global/kafka/interface/k-consumer-message.interface";
 import * as sharp from "sharp";
 import * as fs from "fs";
 import { Post as PostSchema } from "./schema/post.schema";
-import { getSha256Buffer } from "src/global/crypto/hash";
+import { getSha256Buffer } from "@src/global/crypto/hash";
 import { IKPostCreationConsumerDependency } from "./interface/k-post-creation-consumer-dependency-dto.interface";
 import { Types } from "mongoose";
-import { NotiService } from "src/noti/noti.service";
-import { NOTI_CODE } from "src/noti/noti-info";
+import { NotiService } from "@src/noti/noti.service";
+import { NOTI_CODE } from "@src/noti/noti-info";
 
 @Injectable()
 export class PostService {
   constructor(
-    private postRepository: PostRepostory,
+    private postRepository: PostRepository,
     private kafkaProducerService: KafkaProducerService,
     @Inject(CONSUMER_GROUP_ID.POST_CREATION)
     private kafkaConsumerService: KafkaConsumerService,

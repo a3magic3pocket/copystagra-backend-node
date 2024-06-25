@@ -1,7 +1,7 @@
-import { NotiService } from "src/noti/noti.service";
-import { PostRepostory } from "../post.repository";
+import { NotiService } from "@src/noti/noti.service";
+import { PostRepository } from "../post.repository";
 
 export interface IKPostCreationConsumerDependency {
-  postRepository: PostRepostory;
+  postRepository: PostRepository;
   notiService: NotiService;
 }
